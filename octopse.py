@@ -4,8 +4,17 @@ import time
 import argparse
 import shutil
 import os
+import re
 import nu
+import subprocess
 from pprint import pprint
+
+def invoke_deploy(step_path):
+    if os.path.exists(step_path):
+        print("- {0}".format(step_path))
+        args = "powershell.exe {0}".format(step_path)
+        subprocess.call(args, shell=False)
+
 
 def deploy_to_environment(environment, wait, force, data):
     deployments = {}
@@ -90,10 +99,14 @@ def deploy_local(data):
         else:
             version = value['Version']
 
-        if version is None:
-            continue
         for package in value['Packages']:
+            print("- NuGet - {0}".format(package))
             nu.get_deployable(package, version, staging)
+        
+            invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package, version))
+            invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package, version))
+            invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package, version))
+
 
 
 if __name__ == "__main__":
