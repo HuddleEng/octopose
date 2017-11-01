@@ -1,0 +1,3 @@
+octopus_uri = ""
+octopus_headers = {"x-octopus-apikey": ""}
+projects = []
