@@ -1,5 +1,6 @@
 # Octopose Specific
 config.py
+manifest.json
 *.swp
 
 # Byte-compiled / optimized / DLL files
