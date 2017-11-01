@@ -86,5 +86,32 @@ This will add the specific versions of the releases that are currently deployed 
 
 ### Deploy to local envirionment
 
+Deploying to a local environment helps set up developers with the latest code or reproduce a given environment for debugging on your developer workstation.
+
+It reads in the `manifest.json` file that describes the state of the local environment.
+
+```
+python .\octopose.py
+```
+
+This will pull down releases (or given versions) from the NuGet package sources specified in `config.py`. The run through the `PreDeploy.ps1`, `Deploy.ps1`, and `PostDeploy.ps1` executing them for the given release.
 
 ### Deploy to a known Octopus Deploy environment
+
+Octopose can also be used to deployed to remote environments such as staging and production using the releases and versions specified in the `manifest.json` file.
+
+The following command will deploy the state described in the `manifest.json` to the environment `uklive`.
+
+```
+python .\octopose.py -e uklive
+```
+
+Adding a `--force` flag will ensure the package is redownloaded even if it is already deployed into the target environment.
+
+Adding the `--wait` flag will cause **octopose** to continually poll the Octopus Deploy Tasks till they are complete.
+
+```
+python .\octopose.py -e staging --wait --force
+```
+
+
