@@ -78,7 +78,7 @@ def deploy_local(data):
     staging = os.path.normpath(data['StagingLocation'])
     if os.path.exists(staging):
         shutil.rmtree(staging)
-    os.makedirs(staging)
+    os.makedirs(staging, mode=0o777)
 
     for key, value in data['Projects'].items():
         project_name = key
