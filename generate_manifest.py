@@ -2,6 +2,7 @@ import json
 import argparse
 import octo
 import config
+from pprint import pprint
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -12,7 +13,7 @@ if __name__ == '__main__':
     specific_versions = args.versions
     env = args.environment
 
-    manifest = {'StagingLocation': '~\StagingLocation', 'Projects': {}}
+    manifest = {'StagingLocation': config.staging, 'Projects': {}}
     environments = octo.get_environments()
 
     for project in config.projects:
@@ -30,6 +31,6 @@ if __name__ == '__main__':
             project_detail['Packages'] = octo.get_latest_packages(proj_id)
         manifest['Projects'][project] = project_detail
 
-    print(manifest)
+    pprint(manifest)
     with open('manifest.json', 'w') as outfile:
         json.dump(manifest, outfile)
