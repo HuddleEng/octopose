@@ -1,15 +1,39 @@
+""" This module is used to call through to the Octopus Deploy APIs"""
+
+# MIT License
+#
+# Copyright (c) 2017 Huddle
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import json
-import octo
 import time
 import argparse
 import shutil
 import os
-import re
-import nu
 import subprocess
-from pprint import pprint
+
+import octo
+import nu
 
 def invoke_deploy(step_path):
+    """invoke_deploy start a deploy for a given powershell script (*Deploy.ps1)"""
     if os.path.exists(step_path):
         print("- {0}".format(step_path))
         args = "powershell.exe {0}".format(step_path)
@@ -17,8 +41,9 @@ def invoke_deploy(step_path):
 
 
 def deploy_to_environment(environment, wait, force, data):
+    """deploy_to_environment will use the manifest to do a remote deploy into another environment"""
     deployments = {}
-    for key, value in data['Projects'].items():
+    for key, value in data['projects'].items():
         if value is None:
             continue
         project_name = key
@@ -84,12 +109,13 @@ def deploy_to_environment(environment, wait, force, data):
 
 
 def deploy_local(data):
+    """deploy_local will use the manifest to deploy all packages to the local machine"""
     staging = os.path.normpath(data['StagingLocation'])
     if os.path.exists(staging):
         shutil.rmtree(staging)
     os.makedirs(staging, mode=0o777)
 
-    for key, value in data['Projects'].items():
+    for key, value in data['projects'].items():
         project_name = key
         proj_id = octo.get_project_id(project_name)
         if 'Version' not in value:
@@ -102,7 +128,7 @@ def deploy_local(data):
         for package in value['Packages']:
             print("- NuGet - {0}".format(package))
             nu.get_deployable(package, version, staging)
-        
+    
             invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package, version))
             invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package, version))
             invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package, version))

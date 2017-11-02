@@ -106,9 +106,9 @@ The following command will deploy the state described in the `manifest.json` to 
 python .\octopose.py -e uklive
 ```
 
-Adding a `--force` flag will ensure the package is redownloaded even if it is already deployed into the target environment.
+`--force` flag will ensure the package is redownloaded even if it is already deployed into the target environment.
 
-Adding the `--wait` flag will cause **octopose** to continually poll the Octopus Deploy Tasks till they are complete.
+`--wait` flag will cause **octopose** to continually poll the Octopus Deploy Tasks till they are complete.
 
 ```
 python .\octopose.py -e staging --wait --force
