@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--versions', default={}, type=json.loads, 
                         help="Supply specific versions of projects that you like in the manifest.")
     parser.add_argument('-e', '--environment', default="local", type=str,
-                        help="Create a manifest based on an existing deploy to an environment.")
+                        help="Create a manifest based on an existing deploy to an environment. Supplied as a string dictionary.")
 
     args = parser.parse_args()
     specific_versions = args.versions
