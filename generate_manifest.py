@@ -33,20 +33,19 @@ import config
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--versions', default={}, type=json.loads, 
-                        help="Supply specific versions of projects that you like in the manifest.")
+                        help="Supply specific versions of projects that you like in the manifest. Supplied as a string dictionary. (Will need to escape quotes)")
     parser.add_argument('-e', '--environment', default="local", type=str,
-                        help="Create a manifest based on an existing deploy to an environment. Supplied as a string dictionary. (Will need to escape quotes)")
+                        help="Create a manifest based on an existing deploy to an environment.")
 
     args = parser.parse_args()
     specific_versions = args.versions
     env = args.environment
-
-    manifest = {'StagingLocation': config.STAGING, 'Projects': {}}
     environments = octo.get_environments()
     if env not in environments:
         print("please supply a valid environment and try again")
         exit()
 
+    manifest = {'StagingLocation': config.STAGING, 'Projects': {}}
     for project in config.PROJECTS:
         proj_id = octo.get_project_id(project)
         project_detail = {}
