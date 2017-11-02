@@ -43,7 +43,7 @@ def invoke_deploy(step_path):
 def deploy_to_environment(environment, wait, force, data):
     """deploy_to_environment will use the manifest to do a remote deploy into another environment"""
     deployments = {}
-    for key, value in data['projects'].items():
+    for key, value in data['Projects'].items():
         if value is None:
             continue
         project_name = key
@@ -115,8 +115,9 @@ def deploy_local(data):
         shutil.rmtree(staging)
     os.makedirs(staging, mode=0o777)
 
-    for key, value in data['projects'].items():
+    for key, value in data['Projects'].items():
         project_name = key
+        print(project_name)
         proj_id = octo.get_project_id(project_name)
         if 'Version' not in value:
             version = None
@@ -137,7 +138,8 @@ def deploy_local(data):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-e', '--environment', default="local", type=str)
+    parser.add_argument('-e', '--environment', default="local", type=str,
+                        help="Supply the environment that you would like to deploy to.")
     parser.add_argument('--wait', action="store_true",
                         help="Wait and poll for deploy")
     parser.add_argument('--force', action='store_true',

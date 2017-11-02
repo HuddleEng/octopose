@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--versions', default={}, type=json.loads, 
                         help="Supply specific versions of projects that you like in the manifest.")
     parser.add_argument('-e', '--environment', default="local", type=str,
-                        help="Create a manifest based on an existing deploy to an environment. Supplied as a string dictionary.")
+                        help="Create a manifest based on an existing deploy to an environment. Supplied as a string dictionary. (Will need to escape quotes)")
 
     args = parser.parse_args()
     specific_versions = args.versions
@@ -51,6 +51,9 @@ if __name__ == '__main__':
         proj_id = octo.get_project_id(project)
         project_detail = {}
         if project in specific_versions:
+            if specific_versions[project] is None:
+                manifest['Projects'][project] = project_detail = None
+                continue
             deployment = octo.get_deploy_for_version(proj_id, specific_versions[project])
             project_detail['Version'] = specific_versions[project]
             project_detail['Packages'] = octo.get_specific_packages(deployment)
