@@ -48,7 +48,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     specific_versions = args.versions
     env = args.environment
-
     specific_projects = args.projects
 
     environments = octo.get_environments()
