@@ -30,6 +30,10 @@ import octo
 import config
 
 
+def required_to_deploy_this_project(project, specific_projects):
+    return len(specific_projects) == 0 or project in specific_projects
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--versions', default={}, type=json.loads, 
@@ -57,7 +61,7 @@ if __name__ == '__main__':
     for project in config.PROJECTS:
         project_id = octo.get_project_id(project)
         project_detail = {}
-        if len(specific_projects) == 0 or project in specific_projects:
+        if required_to_deploy_this_project(project, specific_projects):
             if project in specific_versions:
                 if specific_versions[project] is None:
                     manifest['Projects'][project] = project_detail = None
