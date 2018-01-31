@@ -41,16 +41,15 @@ if __name__ == '__main__':
                              "Supplied as a string dictionary. (Will need to escape quotes)")
     parser.add_argument('-e', '--environment', default="local", type=str,
                         help="Create a manifest based on an existing deploy to an environment.")
-    parser.add_argument('-p', '--projects', default=None, type=str,
-                        help="Supply specific projects, to only deploy those projects. Supplied as csv.")
+    parser.add_argument('-p', '--projects', nargs='+', default=None, type=str,
+                        help="Supply specific projects, to only deploy those projects. "
+                             "Supplied with spaces between project names.")
 
     args = parser.parse_args()
     specific_versions = args.versions
     env = args.environment
 
-    specific_projects = []
-    if args.projects:
-        specific_projects = args.projects.split(',')
+    specific_projects = args.projects
 
     environments = octo.get_environments()
     if env not in environments:
