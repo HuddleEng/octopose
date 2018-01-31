@@ -4,13 +4,13 @@
 
 ## Why Octopose?
 
-## Instillation
+## Installation
 
+For Python3.3+
 ```
 git clone git@github.com:Huddle/octopose.git
 cd octopose
-mkdir env
-virtualenv env
+python3 -m venv env
 .\env\Scripts\activate.ps1
 ```
 
@@ -38,17 +38,17 @@ Create a manifest file from the `projects` in `config.py`:
 python .\generate_manifest.py
 ```
 
-This will generate a new `manifest.py` based on those projects and the pacakges wihtin them:
+This will output to stdout a manifest based on those projects and the packages within them:
 
 ```
 {
-    'Projects': 
+    'Projects':
     {
-        'Huddle.ABC': 
+        'Huddle.ABC':
             {
                 'Packages': ['Huddle.ABC']
             },
-        'Huddle.XYZ': 
+        'Huddle.XYZ':
             {
                 'Packages': ['Huddle.XYZ1', 'Huddle.XYZ2']
             }
@@ -56,8 +56,8 @@ This will generate a new `manifest.py` based on those projects and the pacakges 
     'StagingLocation': 'D:\\dev\\huddle\\StagingLocation'
 }
 ```
-    
-You can also generate a based on packages in a given environment:
+
+### Generate a manifest based on packages in a given environment
 
 ```
 python .\generate_manifest.py -e uklive
@@ -67,14 +67,14 @@ This will add the specific versions of the releases that are currently deployed 
 
 ```
 {
-    'Projects': 
+    'Projects':
     {
-        'Huddle.ABC': 
+        'Huddle.ABC':
             {
                 'Packages': ['Huddle.ABC'],
                 'Version': '1.0.0'
             },
-        'Huddle.XYZ': 
+        'Huddle.XYZ':
             {
                 'Packages': ['Huddle.XYZ1', 'Huddle.XYZ2'],
                 'Version': '2.3.0'
@@ -84,29 +84,56 @@ This will add the specific versions of the releases that are currently deployed 
 }
 ```
 
-### Deploy to local envirionment
+### Generate a manifest to only deploy certain packages
+
+```
+python .\generate_manifest.py -p Huddle.XYZ
+```
+
+This will only add the specified project to the manifest:
+
+```
+{
+    'Projects':
+    {
+        'Huddle.XYZ':
+            {
+                'Packages': ['Huddle.XYZ1', 'Huddle.XYZ2']
+            }
+    },
+    'StagingLocation': 'D:\\dev\\huddle\\StagingLocation'
+}
+```
+
+### Deploy to local environment
 
 Deploying to a local environment helps set up developers with the latest code or reproduce a given environment for debugging on your developer workstation.
 
-It reads in the `manifest.json` file that describes the state of the local environment.
+It reads in the manifest file supplied that describes the state of the local environment.
 
 ```
-python .\octopose.py
+python .\octopose.py .\manifest.json
 ```
 
 This will pull down releases (or given versions) from the NuGet package sources specified in `config.py`. The run through the `PreDeploy.ps1`, `Deploy.ps1`, and `PostDeploy.ps1` executing them for the given release.
+
+The commands can also be piped together:
+
+```
+python .\generate_manifest.py | python .\octopose.py
+```
 
 ### Deploy to a known Octopus Deploy environment
 
 Octopose can also be used to deployed to remote environments such as staging and production using the releases and versions specified in the `manifest.json` file.
 
-The following command will deploy the state described in the `manifest.json` to the environment `uklive`.
+The following command will deploy the state described in the supplied `manifest.json` to the environment `uklive`.
 
 ```
-python .\octopose.py -e uklive
+python .\octopose.py -e uklive .\manifest.json
 ```
 
-`--force` flag will ensure the package is redownloaded even if it is already deployed into the target environment.
+`--force` flag will ensure the package is re-downloaded even if it is already deployed into the target environment.
 
 `--wait` flag will cause **octopose** to continually poll the Octopus Deploy Tasks till they are complete.
 
