@@ -30,16 +30,26 @@ import octo
 import config
 
 
+def required_to_deploy_this_project(project, specific_projects):
+    return len(specific_projects) == 0 or project in specific_projects
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--versions', default={}, type=json.loads, 
-                        help="Supply specific versions of projects that you like in the manifest. Supplied as a string dictionary. (Will need to escape quotes)")
+                        help="Supply specific versions of projects that you like in the manifest. "
+                             "Supplied as a string dictionary. (Will need to escape quotes)")
     parser.add_argument('-e', '--environment', default="local", type=str,
                         help="Create a manifest based on an existing deploy to an environment.")
+    parser.add_argument('-p', '--projects', nargs='+', default=None, type=str,
+                        help="Supply specific projects, to only deploy those projects. "
+                             "Supplied with spaces between project names.")
 
     args = parser.parse_args()
     specific_versions = args.versions
     env = args.environment
+    specific_projects = args.projects
+
     environments = octo.get_environments()
     if env not in environments:
         print("please supply a valid environment and try again")
@@ -47,22 +57,23 @@ if __name__ == '__main__':
 
     manifest = {'StagingLocation': config.STAGING, 'Projects': {}}
     for project in config.PROJECTS:
-        proj_id = octo.get_project_id(project)
+        project_id = octo.get_project_id(project)
         project_detail = {}
-        if project in specific_versions:
-            if specific_versions[project] is None:
-                manifest['Projects'][project] = project_detail = None
-                continue
-            deployment = octo.get_deploy_for_version(proj_id, specific_versions[project])
-            project_detail['Version'] = specific_versions[project]
-            project_detail['Packages'] = octo.get_specific_packages(deployment)
-        elif env != "local":
-            deployment = octo.get_deploy_for_env(proj_id, environments[env])
-            project_detail['Version'] = deployment['Version']
-            project_detail['Packages'] = octo.get_specific_packages(deployment)
-        else:
-            project_detail['Packages'] = octo.get_latest_packages(proj_id)
-        manifest['Projects'][project] = project_detail
+        if required_to_deploy_this_project(project, specific_projects):
+            if project in specific_versions:
+                if specific_versions[project] is None:
+                    manifest['Projects'][project] = project_detail = None
+                    continue
+                deployment = octo.get_deploy_for_version(project_id, specific_versions[project])
+                project_detail['Version'] = specific_versions[project]
+                project_detail['Packages'] = octo.get_specific_packages(deployment)
+            elif env != "local":
+                deployment = octo.get_deploy_for_env(project_id, environments[env])
+                project_detail['Version'] = deployment['Version']
+                project_detail['Packages'] = octo.get_specific_packages(deployment)
+            else:
+                project_detail['Packages'] = octo.get_latest_packages(project_id)
+            manifest['Projects'][project] = project_detail
 
     pprint(manifest)
     with open('manifest.json', 'w') as outfile:
