@@ -28,9 +28,10 @@ import argparse
 import shutil
 import os
 import subprocess
-
+import sys
 import octo
 import nu
+
 
 def invoke_deploy(step_path):
     """invoke_deploy start a deploy for a given powershell script (*Deploy.ps1)"""
@@ -40,16 +41,17 @@ def invoke_deploy(step_path):
         subprocess.call(args, shell=False)
 
 
-def deploy_to_environment(environment, wait, force, data):
+def deploy_to_environment(env_id, wait, force, data):
     """deploy_to_environment will use the manifest to do a remote deploy into another environment"""
     deployments = {}
     for key, value in data['Projects'].items():
         if value is None:
             continue
+
         project_name = key
         proj_id = octo.get_project_id(project_name)
+
         if 'Version' not in value:
-            version = None
             latest_release = octo.get_latest_release(proj_id)
             version = latest_release['Version']
         else:
@@ -120,7 +122,6 @@ def deploy_local(data):
         print(project_name)
         proj_id = octo.get_project_id(project_name)
         if 'Version' not in value:
-            version = None
             latest_release = octo.get_latest_release(proj_id)
             version = latest_release['Version']
         else:
@@ -135,9 +136,9 @@ def deploy_local(data):
             invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package, version))
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin)
     parser.add_argument('-e', '--environment', default="local", type=str,
                         help="Supply the environment that you would like to deploy to.")
     parser.add_argument('--wait', action="store_true",
@@ -156,10 +157,16 @@ if __name__ == "__main__":
         print("please supply a valid environment and try again")
         exit()
 
-    with open('manifest.json') as data_file:
-        data = json.load(data_file)
-    
-    if environment is not "local":
-        deploy_to_environment(environment, wait, force, data)
+    infile_contents = args.infile.read()
+    try:
+        # If the infile is supplied (rather than coming from stdin) we read as bytes and decode using utf-16 because
+        # it appears Powershell uses this by default when using the > operator to create a file
+        manifest_string = infile_contents.decode('utf-16')
+    except AttributeError:
+        manifest_string = infile_contents
+
+    manifest = json.loads(manifest_string)
+    if environment != "local":
+        deploy_to_environment(env_id, wait, force, manifest)
     else:
-        deploy_local(data)
+        deploy_local(manifest)

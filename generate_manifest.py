@@ -24,8 +24,6 @@
 
 import json
 import argparse
-from pprint import pprint
-
 import octo
 import config
 
@@ -75,6 +73,4 @@ if __name__ == '__main__':
                 project_detail['Packages'] = octo.get_latest_packages(project_id)
             manifest['Projects'][project] = project_detail
 
-    pprint(manifest)
-    with open('manifest.json', 'w') as outfile:
-        json.dump(manifest, outfile)
+    print(json.dumps(manifest, indent=1))
