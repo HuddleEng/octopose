@@ -24,7 +24,6 @@
 
 import json
 import argparse
-import sys
 import octo
 import config
 
@@ -74,4 +73,4 @@ if __name__ == '__main__':
                 project_detail['Packages'] = octo.get_latest_packages(project_id)
             manifest['Projects'][project] = project_detail
 
-    sys.stdout.write(json.dumps(manifest, indent=1))
+    print(json.dumps(manifest, indent=1))

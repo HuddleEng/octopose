@@ -87,15 +87,20 @@ This will add the specific versions of the releases that are currently deployed 
 ### Generate a manifest to only deploy certain packages
 
 ```
-python .\generate_manifest.py -p Huddle.XYZ
+python .\generate_manifest.py -p Huddle.ABC Huddle.XYZ
 ```
 
-This will only add the specified project to the manifest:
+This will only add the specified projects to the manifest:
 
 ```
 {
     'Projects':
     {
+        'Huddle.ABC':
+            {
+                'Packages': ['Huddle.ABC'],
+                'Version': '1.0.0'
+            },
         'Huddle.XYZ':
             {
                 'Packages': ['Huddle.XYZ1', 'Huddle.XYZ2']
@@ -103,6 +108,12 @@ This will only add the specified project to the manifest:
     },
     'StagingLocation': 'D:\\dev\\huddle\\StagingLocation'
 }
+```
+
+### Save manifest to a file
+
+```
+python .\generate_manifest.py > manifest.json
 ```
 
 ### Deploy to local environment
@@ -114,6 +125,12 @@ It reads in the manifest file supplied that describes the state of the local env
 ```
 python .\octopose.py .\manifest.json
 ```
+
+Or
+```
+cat .\manifest.json | python .\octopose.py
+```
+
 
 This will pull down releases (or given versions) from the NuGet package sources specified in `config.py`. The run through the `PreDeploy.ps1`, `Deploy.ps1`, and `PostDeploy.ps1` executing them for the given release.
 

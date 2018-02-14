@@ -47,8 +47,10 @@ def deploy_to_environment(env_id, wait, force, data):
     for key, value in data['Projects'].items():
         if value is None:
             continue
+
         project_name = key
         proj_id = octo.get_project_id(project_name)
+
         if 'Version' not in value:
             latest_release = octo.get_latest_release(proj_id)
             version = latest_release['Version']
@@ -136,7 +138,7 @@ def deploy_local(data):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
+    parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin)
     parser.add_argument('-e', '--environment', default="local", type=str,
                         help="Supply the environment that you would like to deploy to.")
     parser.add_argument('--wait', action="store_true",
@@ -144,7 +146,6 @@ if __name__ == "__main__":
     parser.add_argument('--force', action='store_true',
                         help='Force deployment')
     args = parser.parse_args()
-    manifest = args.infile
     environment = args.environment
     wait = args.wait
     force = args.force
@@ -156,8 +157,16 @@ if __name__ == "__main__":
         print("please supply a valid environment and try again")
         exit()
 
-    data = json.load(manifest)
+    infile_contents = args.infile.read()
+    try:
+        # If the infile is supplied (rather than coming from stdin) we read as bytes and decode using utf-16 because
+        # it appears Powershell uses this by default when using the > operator to create a file
+        manifest_string = infile_contents.decode('utf-16')
+    except AttributeError:
+        manifest_string = infile_contents
+
+    manifest = json.loads(manifest_string)
     if environment != "local":
-        deploy_to_environment(env_id, wait, force, data)
+        deploy_to_environment(env_id, wait, force, manifest)
     else:
-        deploy_local(data)
+        deploy_local(manifest)
