@@ -37,7 +37,7 @@ def invoke_deploy(step_path):
     """invoke_deploy start a deploy for a given powershell script (*Deploy.ps1)"""
     if os.path.exists(step_path):
         print("- {0}".format(step_path))
-        args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
+        args = "powershell.exe {0}".format(step_path)
         subprocess.call(args, shell=False)
 
 
