@@ -22,17 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import subprocess
-
 import config
+import util
 
 
-def get_deployable(name, version, staging_location):
+def get_deployable(name, version, staging_location, verbose):
     """ Get deployables from pacakage sources for local deployment. """
     for source in config.PACKAGE_SOURCES:
-        FNULL = open(os.devnull, 'w')    #use this if you want to suppress output to stdout from the subprocess
-        args = "third_party\\NuGet.exe install {0} -Source {1} -OutputDirectory {2}".format(name, source, staging_location)
-        if version is not None:
-            args = args + " -Version {0}".format(version)
-        subprocess.call(args, stdout=FNULL, stderr=FNULL, shell=False)
+        args = "third_party\\NuGet.exe install {0} -Source {1} -OutputDirectory {2}".format(name, source,
+                                                                                            staging_location)
+        util.run_subprocess(args, "Getting of {0} at version {1} failed".format(name, version), verbose)

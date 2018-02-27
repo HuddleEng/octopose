@@ -27,13 +27,13 @@ import time
 import argparse
 import shutil
 import os
-import subprocess
 import sys
 import octo
 import nu
+import util
 
 
-def invoke_deploy(step_path):
+def invoke_deploy(step_path, verbose):
     """invoke_deploy start a deploy for a given powershell script (*Deploy.ps1)"""
     if os.path.exists(step_path):
         print("- {0}".format(step_path))
@@ -41,7 +41,7 @@ def invoke_deploy(step_path):
             args = "powershell.exe {0}".format(step_path)
         else:
             args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
-        subprocess.call(args, shell=False)
+        util.run_subprocess(args, "Running of {0} failed".format(step_path), verbose)
 
 
 def deploy_to_environment(env_id, wait, force, data):
@@ -113,7 +113,7 @@ def deploy_to_environment(env_id, wait, force, data):
                                        value['Version']))
 
 
-def deploy_local(data):
+def deploy_local(data, verbose):
     """deploy_local will use the manifest to deploy all packages to the local machine"""
     staging = os.path.normpath(data['StagingLocation'])
     if os.path.exists(staging):
@@ -132,11 +132,11 @@ def deploy_local(data):
 
         for package in value['Packages']:
             print("- NuGet - {0}".format(package))
-            nu.get_deployable(package, version, staging)
+            nu.get_deployable(package, version, staging, verbose)
     
-            invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package, version))
-            invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package, version))
-            invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package, version))
+            invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package, version), verbose)
+            invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package, version), verbose)
+            invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package, version), verbose)
 
 
 if __name__ == "__main__":
@@ -144,14 +144,15 @@ if __name__ == "__main__":
     parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin)
     parser.add_argument('-e', '--environment', default="local", type=str,
                         help="Supply the environment that you would like to deploy to.")
-    parser.add_argument('--wait', action="store_true",
-                        help="Wait and poll for deploy")
-    parser.add_argument('--force', action='store_true',
-                        help='Force deployment')
+    parser.add_argument('--wait', action="store_true", help="Wait and poll for deploy")
+    parser.add_argument('--force', action='store_true', help='Force deployment')
+    parser.add_argument('-v', '--verbose', action='store_true', help="Do not suppress logging from deploy scripts.")
+
     args = parser.parse_args()
     environment = args.environment
     wait = args.wait
     force = args.force
+    verbose = args.verbose
 
     environments = octo.get_environments()
     if environment in environments:
@@ -172,4 +173,4 @@ if __name__ == "__main__":
     if environment != "local":
         deploy_to_environment(env_id, wait, force, manifest)
     else:
-        deploy_local(manifest)
+        deploy_local(manifest, verbose)
