@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2017 Huddle
+# Copyright (c) 2018 Huddle
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,15 @@
 # SOFTWARE.
 
 import config
-import util
 
 
-def get_deployable(name, version, staging_location, verbose):
-    """ Get deployables from pacakage sources for local deployment. """
-    for source in config.PACKAGE_SOURCES:
-        args = "third_party\\NuGet.exe install {0} -Source {1} -OutputDirectory {2}".format(name, source,
-                                                                                            staging_location)
-        util.run_subprocess(args, "Getting of {0} at version {1} failed".format(name, version), verbose)
+class Nu:
+    def __init__(self, subprocess_runner):
+        self.subprocess_runner = subprocess_runner
+
+    def get_deployable(self, name, version, staging_location):
+        """ Get deployables from pacakage sources for local deployment. """
+        for source in config.PACKAGE_SOURCES:
+            args = "third_party\\NuGet.exe install {0} -Source {1} -OutputDirectory {2}".format(name, source,
+                                                                                                staging_location)
+            self.subprocess_runner.run(args, "Getting of {0} at version {1} failed".format(name, version))

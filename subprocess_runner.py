@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2017 Huddle
+# Copyright (c) 2018 Huddle
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,17 @@ import subprocess
 import sys
 
 
-def run_subprocess(args, error_msg, verbose):
-    completed_process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
+class SubprocessRunner:
+    def __init__(self, verbose):
+        self.verbose = verbose
 
-    if completed_process.returncode != 0:
-        print(completed_process.stdout.decode('utf-8'))
-        print(error_msg, file=sys.stderr)
-        exit()
+    def run(self, args, error_msg):
+        completed_process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
 
-    if verbose:
-        print(completed_process.stdout.decode('utf-8'))
+        if completed_process.returncode != 0:
+            print(completed_process.stdout.decode('utf-8'))
+            print(error_msg, file=sys.stderr)
+            exit()
+
+        if self.verbose:
+            print(completed_process.stdout.decode('utf-8'))
