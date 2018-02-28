@@ -62,15 +62,19 @@ if __name__ == '__main__':
                 if specific_versions[project] is None:
                     manifest['Projects'][project] = project_detail = None
                     continue
-                deployment = octo.get_deploy_for_version(project_id, specific_versions[project])
+                release = octo.get_release_for_version(project_id, specific_versions[project])
                 project_detail['Version'] = specific_versions[project]
-                project_detail['Packages'] = octo.get_specific_packages(deployment)
+                project_detail['Packages'] = octo.get_specific_packages(release)
             elif env != "local":
-                deployment = octo.get_deploy_for_env(project_id, environments[env])
-                project_detail['Version'] = deployment['Version']
-                project_detail['Packages'] = octo.get_specific_packages(deployment)
+                print(project_id)
+                print(environments[env])
+                release = octo.get_release_for_env(project_id, environments[env])
+                project_detail['Version'] = release['Version']
+                packages = octo.get_specific_packages(release, environments[env])
+                project_detail['Packages'] = packages
             else:
                 project_detail['Packages'] = octo.get_latest_packages(project_id)
+
             manifest['Projects'][project] = project_detail
 
     print(json.dumps(manifest, indent=1))

@@ -62,7 +62,7 @@ def get_project_id(name):
     return r.json()['Id']
 
 
-def get_deploy_for_version(proj_id, version):
+def get_release_for_version(proj_id, version):
     """get_deploy_for_version gets the deploy for a project and version"""
     uri = config.OCTOPUS_URI + "/api/projects/{0}/releases/{1}".format(proj_id, version)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
@@ -71,34 +71,10 @@ def get_deploy_for_version(proj_id, version):
     return None
 
 
-def get_specific_packages(deployment):
-    """get_specific_packages given a deployment get all the steps needed for a deploy"""
-    uri = config.OCTOPUS_URI + deployment['Links']['ProjectDeploymentProcessSnapshot']
-    r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
-    selected = []
-    for p in deployment['SelectedPackages']:
-        selected.append(p['StepName'])
-    if r.status_code == 200:
-        packages = []
-        for step in r.json()['Steps']:
-            if step['Name'] in selected:
-                packages.append(step['Actions'][0]['Properties']['Octopus.Action.Package.PackageId'])
-        return packages
-
-
-def get_latest_packages(proj_id):
-    """get_latest_packages will find the latest deployment and pacakges for the project"""
-    uri = config.OCTOPUS_URI + "/api/deploymentprocesses/deploymentprocess-{0}/template".format(proj_id)
-    r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
-    res = []
-    for package in r.json()['Packages']:
-        res.append(package['NuGetPackageId'])
-    return res
-
-
-def get_deploy_for_env(proj_id, env_id):
+def get_release_for_env(proj_id, env_id):
     """get_deploy_for_env will get information about the last deploy of a project onto an environment"""
     uri = config.OCTOPUS_URI + "/api/deployments?environments={0}&projects={1}".format(env_id, proj_id)
+    print(uri)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if r.status_code == 200:
         uri = config.OCTOPUS_URI + r.json()['Items'][0]['Links']['Release']
@@ -107,8 +83,41 @@ def get_deploy_for_env(proj_id, env_id):
             return r.json()
 
 
+def action_is_a_deployable_and_is_deployed_to_environment(action, environment_id):
+    return action['ActionType'] == 'Octopus.TentaclePackage' and \
+        (environment_id is None or len(action['Environments']) == 0 or environment_id in action['Environments'])
+
+
+def get_specific_packages(release, environment_id=None):
+    """get_specific_packages given a deployment get all the steps needed for a deploy"""
+    uri = config.OCTOPUS_URI + release['Links']['ProjectDeploymentProcessSnapshot']
+    r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
+    if r.status_code == 200:
+        packages = []
+        steps = r.json()['Steps']
+        for step in steps:
+            for action in step['Actions']:
+                if action_is_a_deployable_and_is_deployed_to_environment(action, environment_id):
+                    package_id = action['Properties']['Octopus.Action.Package.PackageId']
+                    if package_id not in packages:
+                        packages.append(package_id)
+
+        return packages
+
+
+def get_latest_packages(proj_id):
+    """get_latest_packages will find the latest deployment and packages for the project"""
+    uri = config.OCTOPUS_URI + "/api/deploymentprocesses/deploymentprocess-{0}/template".format(proj_id)
+    r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
+    res = []
+    for package in r.json()['Packages']:
+        if package['NuGetPackageId'] not in res:
+            res.append(package['NuGetPackageId'])
+    return res
+
+
 def get_last_deploy_for_env(proj_id, env_id):
-    """get_last_deploy_for_env will get the information about the last delpoy that was run in an enviroment"""
+    """get_last_deploy_for_env will get the information about the last deploy that was run in an enviroment"""
     uri = config.OCTOPUS_URI + "/api/deployments?environments={0}&projects={1}&take=4".format(env_id, proj_id)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     return r.json()['Items'][0]
