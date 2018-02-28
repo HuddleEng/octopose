@@ -154,8 +154,10 @@ python .\octopose.py -e uklive .\manifest.json
 
 `--wait` flag will cause **octopose** to continually poll the Octopus Deploy Tasks till they are complete.
 
+`--verbose` (or `-v`) flag will cause **octopose** to output all logs from the `*Deploy.ps1` files. Otherwise there will only be logs from a script if a non-zero exit code is returned.
+
 ```
-python .\octopose.py -e staging --wait --force
+python .\octopose.py -e staging --wait --force --verbose
 ```
 
 
