@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2017 Huddle
+# Copyright (c) 2018 Huddle
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import subprocess
-
 import config
 
 
-def get_deployable(name, version, staging_location):
-    """ Get deployables from pacakage sources for local deployment. """
-    for source in config.PACKAGE_SOURCES:
-        FNULL = open(os.devnull, 'w')    #use this if you want to suppress output to stdout from the subprocess
-        args = "third_party\\NuGet.exe install {0} -Source {1} -OutputDirectory {2}".format(name, source, staging_location)
-        if version is not None:
-            args = args + " -Version {0}".format(version)
-        subprocess.call(args, stdout=FNULL, stderr=FNULL, shell=False)
+class Nu:
+    def __init__(self, subprocess_runner):
+        """Nu interacts with nuget.exe by running commands in a subprocess"""
+        self.subprocess_runner = subprocess_runner
+
+    def get_deployable(self, name, version, staging_location):
+        """ Get deployables from pacakage sources for local deployment. """
+        for source in config.PACKAGE_SOURCES:
+            args = "third_party\\NuGet.exe install {0} -Source {1} -OutputDirectory {2}".format(name, source,
+                                                                                                staging_location)
+            self.subprocess_runner.run(args, "Getting of {0} at version {1} failed".format(name, version))
