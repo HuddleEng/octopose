@@ -63,7 +63,7 @@ def get_project_id(name):
 
 
 def get_release_for_version(proj_id, version):
-    """get_deploy_for_version gets the deploy for a project and version"""
+    """get_release_for_version gets the release for a project and version"""
     uri = config.OCTOPUS_URI + "/api/projects/{0}/releases/{1}".format(proj_id, version)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if r.status_code == 200:
@@ -72,7 +72,7 @@ def get_release_for_version(proj_id, version):
 
 
 def get_release_for_env(proj_id, env_id):
-    """get_deploy_for_env will get information about the last deploy of a project onto an environment"""
+    """get_release_for_env will get information about the last release of a project onto an environment"""
     uri = config.OCTOPUS_URI + "/api/deployments?environments={0}&projects={1}".format(env_id, proj_id)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if r.status_code == 200:
@@ -88,7 +88,7 @@ def action_is_a_deployable_and_is_deployed_to_environment(action, environment_id
 
 
 def get_specific_packages(release, environment_id=None):
-    """get_specific_packages given a deployment get all the steps needed for a deploy"""
+    """get_specific_packages given a release get all the steps needed for a deploy"""
     uri = config.OCTOPUS_URI + release['Links']['ProjectDeploymentProcessSnapshot']
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if r.status_code == 200:
@@ -105,7 +105,7 @@ def get_specific_packages(release, environment_id=None):
 
 
 def get_latest_packages(proj_id):
-    """get_latest_packages will find the latest deployment and packages for the project"""
+    """get_latest_packages will find the latest deployment process and packages for the project"""
     uri = config.OCTOPUS_URI + "/api/deploymentprocesses/deploymentprocess-{0}/template".format(proj_id)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     res = []
