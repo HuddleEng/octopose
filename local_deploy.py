@@ -38,7 +38,7 @@ class LocalDeploy:
         """invoke_deploy start a deploy for a given powershell script (*Deploy.ps1)"""
         if os.path.exists(step_path):
             print("- {0}".format(step_path))
-            if sys.maxsize > 2**32:
+            if is_64_bit_python_installation():
                 args = "powershell.exe {0}".format(step_path)
             else:
                 args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
@@ -68,3 +68,7 @@ class LocalDeploy:
                 self.invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package, version))
                 self.invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package, version))
                 self.invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package, version))
+
+
+def is_64_bit_python_installation():
+    return sys.maxsize > 2**32

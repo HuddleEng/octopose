@@ -66,8 +66,6 @@ if __name__ == '__main__':
                 project_detail['Version'] = specific_versions[project]
                 project_detail['Packages'] = octo.get_specific_packages(release)
             elif env != "local":
-                print(project_id)
-                print(environments[env])
                 release = octo.get_release_for_env(project_id, environments[env])
                 project_detail['Version'] = release['Version']
                 packages = octo.get_specific_packages(release, environments[env])

@@ -74,7 +74,6 @@ def get_release_for_version(proj_id, version):
 def get_release_for_env(proj_id, env_id):
     """get_deploy_for_env will get information about the last deploy of a project onto an environment"""
     uri = config.OCTOPUS_URI + "/api/deployments?environments={0}&projects={1}".format(env_id, proj_id)
-    print(uri)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if r.status_code == 200:
         uri = config.OCTOPUS_URI + r.json()['Items'][0]['Links']['Release']
