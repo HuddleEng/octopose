@@ -26,10 +26,13 @@ import sys
 
 class SubprocessRunner:
     def __init__(self, verbose):
+        """Runs subprocesses and manages logging of outputs"""
         self.verbose = verbose
 
-    def run(self, args, error_msg):
-        completed_process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
+    def run(self, command, error_msg):
+        """run the specified command in a subprocess and log the stdout of the subprocess (if it errors or verbose is
+        True) and the error_msg (if it errors)"""
+        completed_process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
 
         if completed_process.returncode != 0:
             print(completed_process.stdout.decode('utf-8'))

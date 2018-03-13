@@ -30,6 +30,7 @@ import sys
 
 class LocalDeploy:
     def __init__(self, verbose):
+        """LocalDeploy deploys Octopus packages (on the current machine) without needing a tentacle service"""
         self.subprocess_runner = subprocess_runner.SubprocessRunner(verbose)
         self.nu = nu.Nu(self.subprocess_runner)
 

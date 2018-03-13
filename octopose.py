@@ -25,7 +25,7 @@
 import json
 import remote_deploy
 import argparse
-import local_deploy
+from local_deploy import LocalDeploy
 import sys
 import octo
 
@@ -65,4 +65,4 @@ if __name__ == "__main__":
     if environment != "local":
         remote_deploy.deploy_to_environment(env_id, wait, force, manifest)
     else:
-        local_deploy.LocalDeploy(verbose).deploy(manifest)
+        LocalDeploy(verbose).deploy(manifest)

@@ -27,6 +27,7 @@ import config
 
 class Nu:
     def __init__(self, subprocess_runner):
+        """Nu interacts with nuget.exe by running commands in a subprocess"""
         self.subprocess_runner = subprocess_runner
 
     def get_deployable(self, name, version, staging_location):
