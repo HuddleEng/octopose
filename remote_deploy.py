@@ -44,8 +44,8 @@ def deploy_to_environment(env_id, wait, force, data):
         if version is None:
             continue
 
-        to_deploy = octo.get_deploy_for_version(proj_id, version)
-        current_deploy = octo.get_deploy_for_env(proj_id, env_id)
+        to_deploy = octo.get_release_for_version(proj_id, version)
+        current_deploy = octo.get_release_for_env(proj_id, env_id)
         if version == current_deploy['Version']:
             last_deploy = octo.get_last_deploy_for_env(proj_id, env_id)
             last_fail = octo.get_last_failed_deploy_for_env(proj_id, env_id)
