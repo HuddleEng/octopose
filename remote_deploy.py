@@ -28,7 +28,6 @@ import time
 def deploy_to_environment(env_id, wait, force, data):
     """deploy_to_environment will use the manifest to do a remote deploy into another environment"""
     deployments = {}
-    print(data)
     for key, value in data['Projects'].items():
         if value is None:
             continue
