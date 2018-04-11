@@ -14,6 +14,7 @@ git clone git@github.com:Huddle/octopose.git
 cd octopose
 python3 -m venv env
 .\env\Scripts\activate.ps1
+pip install -r requirements.txt
 ```
 
 ## Configuration
