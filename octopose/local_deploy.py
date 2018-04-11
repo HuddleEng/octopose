@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import subprocess_runner
-import nu
 import os
 import shutil
-import octo
 import sys
+
+from octopose import nu, octo, subprocess_runner
 
 
 class LocalDeploy:

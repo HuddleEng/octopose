@@ -22,15 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import json
-import remote_deploy
 import argparse
-from local_deploy import LocalDeploy
+import json
 import sys
-import octo
+
+from octopose import octo, remote_deploy
+from octopose.local_deploy import LocalDeploy
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin)
     parser.add_argument('-e', '--environment', default="local", type=str,
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     parser.add_argument('--force', action='store_true', help='Force deployment')
     parser.add_argument('-v', '--verbose', action='store_true', help="Do not suppress logging from deploy scripts.")
 
-    args = parser.parse_args()
+    args = parser.parse_args(sys.argv[2:])
     environment = args.environment
     wait = args.wait
     force = args.force

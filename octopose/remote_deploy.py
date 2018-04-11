@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-import octo
 import time
+
+from octopose import octo
 
 
 def deploy_to_environment(env_id, wait, force, data):
