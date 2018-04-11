@@ -18,23 +18,26 @@ python3 -m venv env
 
 ## Configuration
 
-Running Octopose requires various configuration variables which can be found in `config.master.py`:
+Running Octopose requires various configuration variables which can be found in `config.master.yaml`:
 
 ```
-octopus_uri = ""
-octopus_headers = {"x-octopus-apikey": ""}
-projects = []
-staging = "~\StagingLocation"
-package_sources = []
+OCTOPUS_URI: ""
+OCTOPUS_HEADERS:
+  "x-octopus-apikey": ""
+PROJECTS:
+  - ""
+STAGING: "~\\StagingLocation"
+PACKAGE_SOURCES:
+  - ""
 ```
 
-Create a copy of this file called `config.py` with your desired variables.
+Create a copy of this file called `config.yaml` with your desired variables and copy it to `~\.octopose\config.yaml`
 
 ## Usage
 
 ### Creating a Manifest File
 
-Create a manifest file from the `projects` in `config.py`:
+Create a manifest file from the `projects` in `config.yaml`:
 
 ```
 python .\generate_manifest.py
@@ -134,7 +137,7 @@ cat .\manifest.json | python .\octopose.py
 ```
 
 
-This will pull down releases (or given versions) from the NuGet package sources specified in `config.py`. The run through the `PreDeploy.ps1`, `Deploy.ps1`, and `PostDeploy.ps1` executing them for the given release.
+This will pull down releases (or given versions) from the NuGet package sources specified in `config.yaml`. The run through the `PreDeploy.ps1`, `Deploy.ps1`, and `PostDeploy.ps1` executing them for the given release.
 
 The commands can also be piped together:
 

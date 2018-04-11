@@ -1,5 +1,5 @@
 # Octopose Specific
-config.py
+config.yaml
 manifest.json
 *.swp
 .DS_Store

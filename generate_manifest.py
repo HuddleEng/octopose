@@ -50,8 +50,8 @@ if __name__ == '__main__':
 
     environments = octo.get_environments()
     if env not in environments:
-        print("please supply a valid environment and try again")
-        exit()
+        print("Please supply a valid environment and try again")
+        exit(1)
 
     manifest = {'StagingLocation': config.STAGING, 'Projects': {}}
     for project in config.PROJECTS:

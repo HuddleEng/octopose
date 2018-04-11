@@ -49,8 +49,8 @@ if __name__ == "__main__":
     if environment in environments:
         env_id = environments[environment]
     else:
-        print("please supply a valid environment and try again")
-        exit()
+        print("Please supply a valid environment and try again")
+        exit(1)
 
     infile_contents = args.infile.read()
     try:

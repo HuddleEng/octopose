@@ -20,24 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import subprocess
-import sys
+import yaml
+import os
 
+config = None
+try:
+    with open(os.path.expanduser("~\.octopose\config.yaml"), 'r') as yaml_file:
+        config = yaml.load(yaml_file)
+except FileNotFoundError:
+    print("""Config file not found. Octopose expects a ~\.octopose\config.yaml in the following format:
+OCTOPUS_URI: ""
+OCTOPUS_HEADERS:
+  "x-octopus-apikey": ""
+PROJECTS:
+  - ""
+STAGING: "~\\\\StagingLocation"
+PACKAGE_SOURCES:
+  - \"\"""")
+    exit(1)
 
-class SubprocessRunner:
-    def __init__(self, verbose):
-        """Runs subprocesses and manages logging of outputs"""
-        self.verbose = verbose
-
-    def run(self, command, error_msg):
-        """run the specified command in a subprocess and log the stdout of the subprocess (if it errors or verbose is
-        True) and the error_msg (if it errors)"""
-        completed_process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
-
-        if completed_process.returncode != 0:
-            print(completed_process.stdout.decode('utf-8'))
-            print(error_msg, file=sys.stderr)
-            exit(1)
-
-        if self.verbose:
-            print(completed_process.stdout.decode('utf-8'))
+OCTOPUS_URI = config['OCTOPUS_URI']
+OCTOPUS_HEADERS = config['OCTOPUS_HEADERS']
+PROJECTS = config['PROJECTS']
+STAGING = config['STAGING']
+PACKAGE_SOURCES = config['PACKAGE_SOURCES']
