@@ -1,3 +1,7 @@
+# Next Release
+
+* Move configuration files to well known location ([#24](https://github.com/HuddleEng/octopose/issues/24))
+
 # v0.1.0
 
 First Release of Octopose.

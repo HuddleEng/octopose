@@ -10,6 +10,7 @@
 
 ```
 pip install octopose
+pip install -r requirements.txt
 ```
 
 ## Configuration
