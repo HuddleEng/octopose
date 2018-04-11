@@ -1,6 +1,7 @@
 # Next Release
 
 * Move configuration files to well known location ([#24](https://github.com/HuddleEng/octopose/issues/24))
+* Make Octopose `pip install` friendly ([#10](https://github.com/HuddleEng/octopose/issues/10))
 
 # v0.1.0
 
