@@ -40,7 +40,7 @@ def main():
                              "Supplied as a string dictionary. (Will need to escape quotes)")
     parser.add_argument('-e', '--environment', default="local", type=str,
                         help="Create a manifest based on an existing deploy to an environment.")
-    parser.add_argument('-p', '--projects', nargs='+', default=None, type=str,
+    parser.add_argument('-p', '--projects', nargs='+', default=[], type=str,
                         help="Supply specific projects, to only deploy those projects. "
                              "Supplied with spaces between project names.")
 
