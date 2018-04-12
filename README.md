@@ -8,12 +8,8 @@
 
 ## Installation
 
-For Python3.3+
 ```
-git clone git@github.com:Huddle/octopose.git
-cd octopose
-python3 -m venv env
-.\env\Scripts\activate.ps1
+pip install octopose
 pip install -r requirements.txt
 ```
 
@@ -41,7 +37,7 @@ Create a copy of this file called `config.yaml` with your desired variables and 
 Create a manifest file from the `projects` in `config.yaml`:
 
 ```
-python .\generate_manifest.py
+octopose generate
 ```
 
 This will output to stdout a manifest based on those projects and the packages within them:
@@ -66,7 +62,7 @@ This will output to stdout a manifest based on those projects and the packages w
 ### Generate a manifest based on packages in a given environment
 
 ```
-python .\generate_manifest.py -e uklive
+octopose generate -e uklive
 ```
 
 This will add the specific versions of the releases that are currently deployed into that environment:
@@ -93,7 +89,7 @@ This will add the specific versions of the releases that are currently deployed 
 ### Generate a manifest to only deploy certain packages
 
 ```
-python .\generate_manifest.py -p Huddle.ABC Huddle.XYZ
+octopose generate -p Huddle.ABC Huddle.XYZ
 ```
 
 This will only add the specified projects to the manifest:
@@ -119,7 +115,7 @@ This will only add the specified projects to the manifest:
 ### Save manifest to a file
 
 ```
-python .\generate_manifest.py > manifest.json
+octopose generate > manifest.json
 ```
 
 ### Deploy to local environment
@@ -129,12 +125,12 @@ Deploying to a local environment helps set up developers with the latest code or
 It reads in the manifest file supplied that describes the state of the local environment.
 
 ```
-python .\octopose.py .\manifest.json
+octopose deploy .\manifest.json
 ```
 
 Or
 ```
-cat .\manifest.json | python .\octopose.py
+cat .\manifest.json | octopose deploy .\octopose.py
 ```
 
 
@@ -143,7 +139,7 @@ This will pull down releases (or given versions) from the NuGet package sources 
 The commands can also be piped together:
 
 ```
-python .\generate_manifest.py | python .\octopose.py
+octopose generate | octopose deploy
 ```
 
 ### Deploy to a known Octopus Deploy environment
@@ -153,7 +149,7 @@ Octopose can also be used to deployed to remote environments such as staging and
 The following command will deploy the state described in the supplied `manifest.json` to the environment `uklive`.
 
 ```
-python .\octopose.py -e uklive .\manifest.json
+octopose deploy -e uklive .\manifest.json
 ```
 
 `--force` flag will ensure the package is re-downloaded even if it is already deployed into the target environment.
@@ -163,7 +159,7 @@ python .\octopose.py -e uklive .\manifest.json
 `--verbose` (or `-v`) flag will cause **octopose** to output all logs from the `*Deploy.ps1` files. Otherwise there will only be logs from a script if a non-zero exit code is returned.
 
 ```
-python .\octopose.py -e staging --wait --force --verbose
+octopose deploy -e staging --wait --force --verbose
 ```
 
 
