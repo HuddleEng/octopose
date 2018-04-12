@@ -29,5 +29,5 @@ First Release of Octopose.
 
 * Deploy state from a manifest file to a deployment known to Octopus Deploy.
 * Optionally blocks till all deployments are complete.
-* Optionally force packages to be re-eeployed even if it is currently in the environment.
+* Optionally force packages to be re-deployed even if it is currently in the environment.
 

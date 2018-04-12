@@ -21,6 +21,11 @@
 # SOFTWARE.
 
 from setuptools import setup
+from os import path
+
+here = path.abspath(path.dirname(__file__))
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name="octopose",
@@ -28,8 +33,9 @@ setup(
     entry_points={
         "console_scripts": ['octopose = octopose.octopose:main']
     },
-    version="0.1.2",
+    version="0.2.0",
     description="Command line tools for managing local and remote octopus deploys using manifests.",
+    long_description=long_description,
     author="George Ayris",
     author_email="george.ayris@huddle.com",
     url="https://github.com/HuddleEng/octopose",
