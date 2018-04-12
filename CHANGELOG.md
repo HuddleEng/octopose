@@ -1,5 +1,8 @@
 # Next Release
 
+# v0.2.1
+* Fix installation issue
+
 # v0.2.0
 
 * Move configuration files to well known location ([#24](https://github.com/HuddleEng/octopose/issues/24))
