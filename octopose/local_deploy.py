@@ -42,6 +42,8 @@ class LocalDeploy:
             else:
                 args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
             self.subprocess_runner.run(args, "Running of {0} failed".format(step_path))
+        else:
+            print("ERROR: Can't find path {0}".format(step_path))
 
     def deploy(self, data):
         """deploy_local will use the manifest to deploy all packages to the local machine"""
