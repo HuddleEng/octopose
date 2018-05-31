@@ -1,5 +1,8 @@
 # Next Release
 
+# v0.2.2
+* Fix local deploy not downloading correct packages when specifying version ([#30](https://github.com/HuddleEng/octopose/issues/30))
+
 # v0.2.1
 * Fix installation issue
 

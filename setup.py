@@ -33,7 +33,7 @@ setup(
     entry_points={
         "console_scripts": ['octopose = octopose.octopose:main']
     },
-    version="0.2.1",
+    version="0.2.2",
     description="Command line tools for managing local and remote octopus deploys using manifests.",
     long_description=long_description,
     author="George Ayris",
