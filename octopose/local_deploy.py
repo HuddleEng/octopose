@@ -35,15 +35,15 @@ class LocalDeploy:
 
     def invoke_deploy(self, step_path):
         """invoke_deploy start a deploy for a given powershell script (*Deploy.ps1)"""
+        print("- {0}".format(step_path))
         if os.path.exists(step_path):
-            print("- {0}".format(step_path))
             if is_64_bit_python_installation():
                 args = "powershell.exe {0}".format(step_path)
             else:
                 args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
             self.subprocess_runner.run(args, "Running of {0} failed".format(step_path))
         else:
-            print("ERROR: Can't find path {0}".format(step_path))
+            print("Can't find path - skipping this file")
 
     def deploy(self, data):
         """deploy_local will use the manifest to deploy all packages to the local machine"""
