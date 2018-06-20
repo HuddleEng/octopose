@@ -77,6 +77,8 @@ class LocalDeploy:
                         break
 
                 if not successful_deployment:
+                    print("WARNING: Deploy of {0} has failed. Skipping any remaining packages in the project."
+                          .format(project_name))
                     break
 
             deployment_results.append((project_name, release_version, successful_deployment))
@@ -109,6 +111,7 @@ def is_64_bit_python_installation():
 
 
 def print_deployment_results(deployment_results):
+    print("")
     print("-- Deployment Results --")
     for result in deployment_results:
         if result[2]:
