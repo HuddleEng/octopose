@@ -1,6 +1,7 @@
 # Next Release
 * Allow deploying of packages that have a different version to the release version ([#33](https://github.com/HuddleEng/octopose/issues/33))
 * Improve logging when can't find *.ps1 file ([#32](https://github.com/HuddleEng/octopose/issues/32))
+* Only fail deploy for given project (and not all projects), if a package deploy step fails ([#34](https://github.com/HuddleEng/octopose/34))
 
 # v0.2.2
 * Fix local deploy not downloading correct packages when specifying version ([#30](https://github.com/HuddleEng/octopose/issues/30))

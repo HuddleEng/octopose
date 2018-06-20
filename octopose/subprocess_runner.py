@@ -37,7 +37,9 @@ class SubprocessRunner:
         if completed_process.returncode != 0:
             print(completed_process.stdout.decode('utf-8'))
             print(error_msg, file=sys.stderr)
-            exit(1)
+            return False
 
         if self.verbose:
             print(completed_process.stdout.decode('utf-8'))
+
+        return True
