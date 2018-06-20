@@ -54,21 +54,43 @@ class LocalDeploy:
 
         for key, value in data['Projects'].items():
             project_name = key
-            print(project_name)
             proj_id = octo.get_project_id(project_name)
+
             if 'Version' not in value:
                 latest_release = octo.get_latest_release(proj_id)
-                version = latest_release['Version']
+                release_version = latest_release['Version']
             else:
-                version = value['Version']
+                release_version = value['Version']
+            print("{0} - {1}".format(project_name, release_version))
 
-            for package in value['Packages']:
-                print("- NuGet - {0}".format(package))
-                self.nu.get_deployable(package, version, staging)
+            for package in get_package_versions(proj_id, release_version, value['Packages']):
+                package_name = package['PackageId']
+                version = package['Version']
+                print("- NuGet - {0} - {1}".format(package_name, version))
+                self.nu.get_deployable(package_name, version, staging)
 
-                self.invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package, version))
-                self.invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package, version))
-                self.invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package, version))
+                self.invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package_name, version))
+                self.invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package_name, version))
+                self.invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package_name, version))
+
+
+def get_package_versions(proj_id, release_version, package_ids_to_deploy):
+    release = octo.get_release_for_version(proj_id, release_version)
+    step_names_and_version = release['SelectedPackages']
+    package_ids_and_step_names = octo.get_specific_packages(release)
+
+    packages_to_deploy = []
+    for p in step_names_and_version:
+        step_name = p['StepName']
+        version = p['Version']
+
+        for pp in package_ids_and_step_names:
+            if step_name == pp['StepName']:
+                if pp['PackageId'] in package_ids_to_deploy:
+                    packages_to_deploy.append({"PackageId": pp['PackageId'], "Version": version})
+                break
+
+    return packages_to_deploy
 
 
 def is_64_bit_python_installation():

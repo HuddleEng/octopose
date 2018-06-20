@@ -65,11 +65,11 @@ def main():
                     continue
                 release = octo.get_release_for_version(project_id, specific_versions[project])
                 project_detail['Version'] = specific_versions[project]
-                project_detail['Packages'] = octo.get_specific_packages(release)
+                project_detail['Packages'] = octo.get_specific_package_ids(release)
             elif env != "local":
                 release = octo.get_release_for_env(project_id, environments[env])
                 project_detail['Version'] = release['Version']
-                packages = octo.get_specific_packages(release, environments[env])
+                packages = octo.get_specific_package_ids(release, environments[env])
                 project_detail['Packages'] = packages
             else:
                 project_detail['Packages'] = octo.get_latest_packages(project_id)

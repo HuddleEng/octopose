@@ -88,6 +88,11 @@ def action_is_a_deployable_and_is_deployed_to_environment(action, environment_id
         (environment_id is None or len(action['Environments']) == 0 or environment_id in action['Environments'])
 
 
+def get_specific_package_ids(release, environment_id=None):
+    packages = get_specific_packages(release, environment_id)
+    return [p["PackageId"] for p in packages]
+
+
 def get_specific_packages(release, environment_id=None):
     """get_specific_packages given a release get all the steps needed for a deploy"""
     uri = config.OCTOPUS_URI + release['Links']['ProjectDeploymentProcessSnapshot']
@@ -99,8 +104,9 @@ def get_specific_packages(release, environment_id=None):
             for action in step['Actions']:
                 if action_is_a_deployable_and_is_deployed_to_environment(action, environment_id):
                     package_id = action['Properties']['Octopus.Action.Package.PackageId']
-                    if package_id not in packages:
-                        packages.append(package_id)
+                    if package_id not in [p["PackageId"] for p in packages]:
+                        packages.append({"PackageId": package_id,
+                                         "StepName": action['Name']})
 
         return packages
 
