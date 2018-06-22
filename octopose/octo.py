@@ -89,12 +89,13 @@ def action_is_a_deployable_and_is_deployed_to_environment(action, environment_id
 
 
 def get_specific_package_ids(release, environment_id=None):
+    """get_specific_package_ids given a release get all the packageIds needed for a deploy"""
     packages = get_specific_packages(release, environment_id)
     return [p["PackageId"] for p in packages]
 
 
 def get_specific_packages(release, environment_id=None):
-    """get_specific_packages given a release get all the steps needed for a deploy"""
+    """get_specific_packages given a release get all the steps and packageIds needed for a deploy"""
     uri = config.OCTOPUS_URI + release['Links']['ProjectDeploymentProcessSnapshot']
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if r.status_code == 200:

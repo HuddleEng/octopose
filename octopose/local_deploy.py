@@ -55,14 +55,13 @@ class LocalDeploy:
         for key, value in data['Projects'].items():
             project_name = key
             proj_id = octo.get_project_id(project_name)
-
             if 'Version' not in value:
                 latest_release = octo.get_latest_release(proj_id)
                 release_version = latest_release['Version']
             else:
                 release_version = value['Version']
-            print("{0} - {1}".format(project_name, release_version))
 
+            print("{0} - {1}".format(project_name, release_version))
             for package in get_package_versions(proj_id, release_version, value['Packages']):
                 package_name = package['PackageId']
                 version = package['Version']
@@ -76,18 +75,19 @@ class LocalDeploy:
 
 def get_package_versions(proj_id, release_version, package_ids_to_deploy):
     release = octo.get_release_for_version(proj_id, release_version)
-    step_names_and_version = release['SelectedPackages']
+    step_names_and_versions = release['SelectedPackages']
     package_ids_and_step_names = octo.get_specific_packages(release)
 
     packages_to_deploy = []
-    for p in step_names_and_version:
-        step_name = p['StepName']
-        version = p['Version']
+    for step_name_and_version in step_names_and_versions:
+        for package_id_and_step_name in package_ids_and_step_names:
 
-        for pp in package_ids_and_step_names:
-            if step_name == pp['StepName']:
-                if pp['PackageId'] in package_ids_to_deploy:
-                    packages_to_deploy.append({"PackageId": pp['PackageId'], "Version": version})
+            if step_name_and_version['StepName'] == package_id_and_step_name['StepName']:
+
+                if package_id_and_step_name['PackageId'] in package_ids_to_deploy:
+                    packages_to_deploy.append({"PackageId": package_id_and_step_name['PackageId'],
+                                               "Version": step_name_and_version['Version']})
+
                 break
 
     return packages_to_deploy
