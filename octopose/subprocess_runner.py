@@ -35,9 +35,12 @@ class SubprocessRunner:
         completed_process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
 
         if completed_process.returncode != 0:
-            print(completed_process.stdout.decode('utf-8'))
+            error_logs = completed_process.stdout.decode('utf-8')
+            print(error_logs)
             print(error_msg, file=sys.stderr)
-            exit(1)
+            return False, "{0} \r\n {1}".format(error_msg, error_logs)
 
         if self.verbose:
             print(completed_process.stdout.decode('utf-8'))
+
+        return True, None

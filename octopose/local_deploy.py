@@ -41,18 +41,22 @@ class LocalDeploy:
                 args = "powershell.exe {0}".format(step_path)
             else:
                 args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
-            self.subprocess_runner.run(args, "Running of {0} failed".format(step_path))
+            return self.subprocess_runner.run(args, "Running of {0} failed".format(step_path))
         else:
             print("Can't find path - skipping this file")
+            return True, None
 
     def deploy(self, data):
-        """deploy_local will use the manifest to deploy all packages to the local machine"""
+        """deploy will use the manifest to deploy all packages to the local machine"""
         staging = os.path.normpath(data['StagingLocation'])
         if os.path.exists(staging):
             shutil.rmtree(staging)
         os.makedirs(staging, mode=0o777)
 
+        deployment_results = []
         for key, value in data['Projects'].items():
+            successful_deployment = True
+            error_message = None
             project_name = key
             proj_id = octo.get_project_id(project_name)
             if 'Version' not in value:
@@ -68,9 +72,25 @@ class LocalDeploy:
                 print("- NuGet - {0} - {1}".format(package_name, version))
                 self.nu.get_deployable(package_name, version, staging)
 
-                self.invoke_deploy("{0}\{1}.{2}\PreDeploy.ps1".format(staging, package_name, version))
-                self.invoke_deploy("{0}\{1}.{2}\Deploy.ps1".format(staging, package_name, version))
-                self.invoke_deploy("{0}\{1}.{2}\PostDeploy.ps1".format(staging, package_name, version))
+                for script in ["{0}\{1}.{2}\PreDeploy.ps1", "{0}\{1}.{2}\Deploy.ps1", "{0}\{1}.{2}\PostDeploy.ps1"]:
+                    successful_deployment, error_message = self.invoke_deploy(script.format(staging,
+                                                                                            package_name,
+                                                                                            version))
+                    if not successful_deployment:
+                        break
+
+                if not successful_deployment:
+                    print("WARNING: Deploy of {0} has failed. Skipping any remaining packages in the project."
+                          .format(project_name))
+                    break
+
+            deployment_results.append((project_name, release_version, successful_deployment, error_message))
+
+        print_deployment_results(deployment_results)
+
+        all_deployments_succeeded = all(result[2] for result in deployment_results)
+        if not all_deployments_succeeded:
+            exit(1)
 
 
 def get_package_versions(proj_id, release_version, package_ids_to_deploy):
@@ -95,3 +115,20 @@ def get_package_versions(proj_id, release_version, package_ids_to_deploy):
 
 def is_64_bit_python_installation():
     return sys.maxsize > 2**32
+
+
+def print_deployment_results(deployment_results):
+    print("")
+    print("-- Error Messages --")
+    for result in deployment_results:
+        if not result[2]:
+            print(result[3])
+
+    print("")
+    print("-- Deployment Results --")
+    for result in deployment_results:
+        if result[2]:
+            status = "Success"
+        else:
+            status = "Failure"
+        print("{0} - {1} - {2}".format(result[0], result[1], status))
