@@ -36,10 +36,10 @@ def required_to_deploy_this_project(project, specific_projects):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--versions', default={}, type=json.loads, 
-                        help="Supply specific versions of projects that you like in the manifest. "
+                        help="Supply specific versions of projects to be written to the manifest. "
                              "Supplied as a string dictionary. (Will need to escape quotes)")
     parser.add_argument('-e', '--environment', default="local", type=str,
-                        help="Create a manifest based on an existing deploy to an environment.")
+                        help="Create a manifest based on the packages currently deployed to an environment.")
     parser.add_argument('-p', '--projects', nargs='+', default=[], type=str,
                         help="Supply specific projects, to only deploy those projects. "
                              "Supplied with spaces between project names.")

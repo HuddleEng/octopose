@@ -34,6 +34,10 @@ setup(
         "console_scripts": ['octopose = octopose.octopose:main']
     },
     version="0.2.4",
+    license="MIT",
+    classifiers=['Intended Audience :: Developers',
+                 'Programming Language :: Python :: 3',
+                 'License :: OSI Approved :: MIT License'],
     description="Command line tools for managing local and remote octopus deploys using manifests.",
     long_description=long_description,
     author="George Ayris",
@@ -49,4 +53,3 @@ setup(
     ],
     include_package_data=True
 )
-
