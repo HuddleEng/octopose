@@ -1,8 +1,8 @@
 # Next Release
 
 # v0.2.4
-* Improve help text ([#30](https://github.com/HuddleEng/octopose/issues/35))
-* Update setup.py info ([#30](https://github.com/HuddleEng/octopose/issues/39))
+* Improve help text ([#35](https://github.com/HuddleEng/octopose/issues/35))
+* Update setup.py info ([#39](https://github.com/HuddleEng/octopose/issues/39))
 
 # v0.2.3
 * Allow deploying of packages that have a different version to the release version ([#33](https://github.com/HuddleEng/octopose/issues/33))
