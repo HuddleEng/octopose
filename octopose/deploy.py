@@ -39,7 +39,7 @@ def main():
     parser.add_argument('--wait', action="store_true",
                         help="Wait and poll for deploy. Octopose will continually poll the Octopus Deploy Tasks till they are complete")
     parser.add_argument('--force', action='store_true',
-                        help='Force deployment. Ensures the package is re-downloaded even if it is already deployed into the target environment')
+                        help='Force deployment. Ensures the package is re-deployed even if the selected version is already deployed into the target environment')
     parser.add_argument('-v', '--verbose', action='store_true', help="Do not suppress logging from deploy scripts.")
 
     args = parser.parse_args(sys.argv[2:])
