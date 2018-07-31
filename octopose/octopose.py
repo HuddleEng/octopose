@@ -27,8 +27,14 @@ from octopose import generate_manifest, deploy
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('command')
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter, prog='octopose',
+                                     description='Octopose is a manifest/state driven deployment framework for Octopus Deploy.',
+                                     usage='%(prog)s [generate] [deploy] [-h]',
+                                     epilog='For documentation see https://github.com/HuddleEng/octopose/blob/master/README.md')
+    parser.add_argument('command', choices=['generate', 'deploy'],
+                        help='generate      Creates a new manifest file from the projects in config.yaml.\r'
+                             'deploy        Deploys the state described in the specified manifest file.')
+
     args = parser.parse_args(sys.argv[1:2])
 
     if args.command == 'generate':

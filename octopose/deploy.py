@@ -32,11 +32,14 @@ from octopose.local_deploy import LocalDeploy
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin)
+    parser.add_argument('infile', nargs='?', type=argparse.FileType('rb'), default=sys.stdin,
+                        help='Supply a .json manifest file as an input')
     parser.add_argument('-e', '--environment', default="local", type=str,
                         help="Supply the environment that you would like to deploy to.")
-    parser.add_argument('--wait', action="store_true", help="Wait and poll for deploy")
-    parser.add_argument('--force', action='store_true', help='Force deployment')
+    parser.add_argument('--wait', action="store_true",
+                        help="Wait and poll for deploy. Octopose will continually poll the Octopus Deploy Tasks till they are complete")
+    parser.add_argument('--force', action='store_true',
+                        help='Force deployment. Ensures the package is re-deployed even if the selected version is already deployed into the target environment')
     parser.add_argument('-v', '--verbose', action='store_true', help="Do not suppress logging from deploy scripts.")
 
     args = parser.parse_args(sys.argv[2:])
