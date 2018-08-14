@@ -22,6 +22,7 @@
 
 import subprocess
 import sys
+import pathlib
 
 
 class SubprocessRunner:
@@ -29,10 +30,11 @@ class SubprocessRunner:
         """Runs subprocesses and manages logging of outputs"""
         self.verbose = verbose
 
-    def run(self, command, error_msg):
+    def run(self, command, error_msg, path):
         """run the specified command in a subprocess and log the stdout of the subprocess (if it errors or verbose is
         True) and the error_msg (if it errors)"""
-        completed_process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
+        working_path = pathlib.Path(path)
+        completed_process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False, cwd=working_path.parent)
 
         if completed_process.returncode != 0:
             error_logs = completed_process.stdout.decode('utf-8')

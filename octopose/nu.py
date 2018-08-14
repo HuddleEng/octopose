@@ -41,4 +41,4 @@ class Nu:
             if version is not None:
                 args = args + " -Version {0}".format(version)
 
-            self.subprocess_runner.run(args, "Getting of {0} at version {1} failed".format(name, version))
+            self.subprocess_runner.run(args, "Getting of {0} at version {1} failed".format(name, version), self.nuget_exe)

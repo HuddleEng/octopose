@@ -33,7 +33,7 @@ setup(
     entry_points={
         "console_scripts": ['octopose = octopose.octopose:main']
     },
-    version="0.2.4",
+    version="0.2.5",
     license="MIT",
     classifiers=['Intended Audience :: Developers',
                  'Programming Language :: Python :: 3',
