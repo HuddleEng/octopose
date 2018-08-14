@@ -68,4 +68,4 @@ def main():
     if environment != "local":
         remote_deploy.deploy_to_environment(env_id, wait, force, manifest)
     else:
-        LocalDeploy(verbose).deploy(manifest)
+        LocalDeploy(verbose).deploy(force, manifest)

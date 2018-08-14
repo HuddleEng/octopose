@@ -25,7 +25,13 @@ import shutil
 import sys
 
 from octopose import nu, octo, subprocess_runner
+from enum import Enum
 
+
+class DeployStatus(Enum):
+    Success = 1
+    Failure = 2
+    Skipped = 3
 
 class LocalDeploy:
     def __init__(self, verbose):
@@ -41,21 +47,30 @@ class LocalDeploy:
                 args = "powershell.exe {0}".format(step_path)
             else:
                 args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
-            return self.subprocess_runner.run(args, "Running of {0} failed".format(step_path), step_path)
+
+            succeeded, message = self.subprocess_runner.run(args, "Running of {0} failed".format(step_path), step_path)
+            if succeeded:
+                return DeployStatus.Success, message
+            else:
+                return DeployStatus.Failure, message
+            #return self.subprocess_runner.run(args, "Running of {0} failed".format(step_path), step_path)
         else:
             print("Can't find path - skipping this file")
-            return True, None
+            return DeployStatus.Success, None
 
-    def deploy(self, data):
+    def deploy(self, force, data):
         """deploy will use the manifest to deploy all packages to the local machine"""
         staging = os.path.normpath(data['StagingLocation'])
         if os.path.exists(staging):
-            shutil.rmtree(staging)
-        os.makedirs(staging, mode=0o777)
+            if force:
+                shutil.rmtree(staging)
+                os.makedirs(staging, mode=0o777)
+        else:
+            os.makedirs(staging, mode=0o777)
 
         deployment_results = []
         for key, value in data['Projects'].items():
-            successful_deployment = True
+            successful_deployment = DeployStatus.Failure
             error_message = None
             project_name = key
             proj_id = octo.get_project_id(project_name)
@@ -70,18 +85,23 @@ class LocalDeploy:
                 package_name = package['PackageId']
                 version = package['Version']
                 print("- NuGet - {0} - {1}".format(package_name, version))
+                package_path = os.path.join(staging, "{0}.{1}".format(package_name, version))
+
+                if os.path.exists(package_path):
+                    print("Package exists in staging area {0} skipping install".format(package_path))
+                    successful_deployment = DeployStatus.Skipped
+                    continue
+
                 self.nu.get_deployable(package_name, version, staging)
 
-                for script in ["{0}\{1}.{2}\PreDeploy.ps1", "{0}\{1}.{2}\Deploy.ps1", "{0}\{1}.{2}\PostDeploy.ps1"]:
-                    successful_deployment, error_message = self.invoke_deploy(script.format(staging,
-                                                                                            package_name,
-                                                                                            version))
-                    if not successful_deployment:
+                for script in ["{0}\PreDeploy.ps1", "{0}\Deploy.ps1", "{0}\PostDeploy.ps1"]:
+                    successful_deployment, error_message = self.invoke_deploy(script.format(package_path))
+                    if successful_deployment == DeployStatus.Failure:
                         break
 
-                if not successful_deployment:
-                    print("WARNING: Deploy of {0} has failed. Skipping any remaining packages in the project."
-                          .format(project_name))
+                if successful_deployment == DeployStatus.Failure:
+                    print("WARNING: Deploy of {0} has failed. Skipping any remaining packages in the project.".format(project_name))
+                    shutil.rmtree(package_path)
                     break
 
             deployment_results.append((project_name, release_version, successful_deployment, error_message))
@@ -121,14 +141,10 @@ def print_deployment_results(deployment_results):
     print("")
     print("-- Error Messages --")
     for result in deployment_results:
-        if not result[2]:
+        if result[2] == DeployStatus.Failure:
             print(result[3])
 
     print("")
     print("-- Deployment Results --")
     for result in deployment_results:
-        if result[2]:
-            status = "Success"
-        else:
-            status = "Failure"
-        print("{0} - {1} - {2}".format(result[0], result[1], status))
+        print("{0} - {1} - {2}".format(result[0], result[1], result[2]))
