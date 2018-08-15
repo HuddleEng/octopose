@@ -1,3 +1,2 @@
-include LICENSE
-include README.md
+include README.md LICENSE
 include octopose/third_party/NuGet.exe
