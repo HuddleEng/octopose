@@ -45,8 +45,8 @@ from setuptools import find_packages, setup, Command
 NAME = 'octopose'
 DESCRIPTION = 'Command line tools for managing local and remote octopus deploys using manifests.'
 URL = 'https://github.com/HuddleEng/octopose'
-EMAIL = 'george.ayris@huddle.com'
-AUTHOR = 'George Ayris'
+EMAIL = 'opensource@huddle.com'
+AUTHOR = 'Huddleoss'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = None
 
