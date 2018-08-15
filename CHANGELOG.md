@@ -1,5 +1,12 @@
 # Next Release
 
+# v0.2.5
+
+* Show version number
+* Set current working folder during execution of deployment .ps1 files
+* New setup file style based on https://github.com/kennethreitz/setup.py
+* Updated project metadata
+
 # v0.2.4
 * Improve help text ([#35](https://github.com/HuddleEng/octopose/issues/35))
 * Update setup.py info ([#39](https://github.com/HuddleEng/octopose/issues/39))
