@@ -2,8 +2,8 @@
 
 # v0.2.5
 
-* Show version number
-* Set current working folder during execution of deployment .ps1 files
+* Show version number ([#47](https://github.com/HuddleEng/octopose/issues/47))
+* Set current working folder during execution of deployment .ps1 files ([#45](https://github.com/HuddleEng/octopose/issues/45))
 * New setup file style based on https://github.com/kennethreitz/setup.py
 * Updated project metadata
 
