@@ -35,7 +35,7 @@ def required_to_deploy_this_project(project, specific_projects):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--versions', default={}, type=json.loads, 
+    parser.add_argument('-v', '--versions', default={}, type=json.loads,
                         help="Supply specific versions of projects to be written to the manifest. "
                              "Supplied as a string dictionary. (Will need to escape quotes)")
     parser.add_argument('-e', '--environment', default="local", type=str,
@@ -54,6 +54,7 @@ def main():
         print("Please supply a valid environment and try again")
         exit(1)
 
+    missing_projects = []
     manifest = {'StagingLocation': config.STAGING, 'Projects': {}}
     for project in config.PROJECTS:
         project_id = octo.get_project_id(project)
@@ -68,12 +69,21 @@ def main():
                 project_detail['Packages'] = octo.get_specific_package_ids(release)
             elif env != "local":
                 release = octo.get_release_for_env(project_id, environments[env])
-                project_detail['Version'] = release['Version']
-                packages = octo.get_specific_package_ids(release, environments[env])
-                project_detail['Packages'] = packages
+                if release is not None:
+                    project_detail['Version'] = release['Version']
+                    packages = octo.get_specific_package_ids(release, environments[env])
+                    project_detail['Packages'] = packages
+                else:
+                    project_detail['Packages'] = octo.get_latest_packages(project_id)
+                    missing_projects.append(project)
             else:
                 project_detail['Packages'] = octo.get_latest_packages(project_id)
 
             manifest['Projects'][project] = project_detail
 
-    print(json.dumps(manifest, indent=1))
+    if missing_projects:
+        print(
+            'Some projects do not exist on {1}. The manifest contains the latest available package versions for these projects: {0}'.format(
+                missing_projects, env), '\n\n', json.dumps(manifest, indent=1))
+    else:
+        print(json.dumps(manifest, indent=1))
