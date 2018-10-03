@@ -38,9 +38,9 @@ class LocalDeploy:
         print("- {0}".format(step_path))
         if os.path.exists(step_path):
             if is_64_bit_python_installation():
-                args = "powershell.exe {0}".format(step_path)
+                args = "powershell.exe –NoProfile –ExecutionPolicy Bypass –File {0}".format(step_path)
             else:
-                args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe {0}".format(step_path)
+                args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe –NoProfile –ExecutionPolicy Bypass –File {0}".format(step_path)
             return self.subprocess_runner.run(args, "Running of {0} failed".format(step_path), step_path)
         else:
             print("Can't find path - skipping this file")
