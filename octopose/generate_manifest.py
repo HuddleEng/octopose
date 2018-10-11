@@ -43,19 +43,29 @@ def main():
     parser.add_argument('-p', '--projects', nargs='+', default=[], type=str,
                         help="Supply specific projects, to only deploy those projects. "
                              "Supplied with spaces between project names.")
+    parser.add_argument('-i', '--ignore', nargs='+', default=[], type=str,
+                        help="Supply project names to be ignored from the config.yaml file. Manifest generation will ignore these projects."
+                             "Supplied with spaces between project names.")
 
     args = parser.parse_args(sys.argv[2:])
     specific_versions = args.versions
     env = args.environment
     specific_projects = args.projects
+    ignored_projects = args.ignore
+    projects = sorted(set(config.PROJECTS))
 
     environments = octo.get_environments()
     if env not in environments:
         print("Please supply a valid environment and try again")
         exit(1)
 
+    if ignored_projects:
+        for p in projects[:]:
+            if p in sorted(set(ignored_projects)):
+                projects.remove(p)
+
     manifest = {'StagingLocation': config.STAGING, 'Projects': {}}
-    for project in config.PROJECTS:
+    for project in projects:
         project_id = octo.get_project_id(project)
         project_detail = {}
         if required_to_deploy_this_project(project, specific_projects):
