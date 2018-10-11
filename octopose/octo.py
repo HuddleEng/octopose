@@ -77,15 +77,17 @@ def get_release_for_env(proj_id, env_id):
     uri = config.OCTOPUS_URI + "/api/deployments?environments={0}&projects={1}".format(env_id, proj_id)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if r.status_code == 200:
-        uri = config.OCTOPUS_URI + r.json()['Items'][0]['Links']['Release']
-        r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
-        if r.status_code == 200:
+        try:
+            uri = config.OCTOPUS_URI + r.json()['Items'][0]['Links']['Release']
+            r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
             return r.json()
+        except IndexError:
+            return None
 
 
 def action_is_a_deployable_and_is_deployed_to_environment(action, environment_id):
     return action['ActionType'] == 'Octopus.TentaclePackage' and \
-        (environment_id is None or len(action['Environments']) == 0 or environment_id in action['Environments'])
+           (environment_id is None or len(action['Environments']) == 0 or environment_id in action['Environments'])
 
 
 def get_specific_package_ids(release, environment_id=None):
@@ -132,7 +134,8 @@ def get_last_deploy_for_env(proj_id, env_id):
 
 def get_last_failed_deploy_for_env(proj_id, env_id):
     """get_last_failed_deploy_for_env will get the last failed deploy to an environment"""
-    uri = config.OCTOPUS_URI + "/api/deployments?environments={0}&projects={1}&take=4&taskState=Failed".format(env_id, proj_id)
+    uri = config.OCTOPUS_URI + "/api/deployments?environments={0}&projects={1}&take=4&taskState=Failed".format(env_id,
+                                                                                                               proj_id)
     r = requests.get(uri, headers=config.OCTOPUS_HEADERS, verify=False)
     if len(r.json()['Items']) > 0:
         return r.json()['Items'][0]
