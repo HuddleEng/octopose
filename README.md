@@ -111,6 +111,13 @@ This will only add the specified projects to the manifest:
 }
 ```
 
+### Generate a manifest and ignore certain packages
+```
+octopose generate -i Tasks Publishing
+octopose generate --ignore Tasks 
+```
+This will remove projects from the manfest.
+
 ### Save manifest to a file
 
 ```

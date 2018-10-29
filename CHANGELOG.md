@@ -1,5 +1,16 @@
 # Next Release
 
+# v0.2.8
+* Fix for issue #44. Manifest generation handles missing projects. ([#44](https://github.com/HuddleEng/octopose/issues/44))
+* Ignore argument allows for the exclusion of projects. Fix for #41. ([#41](https://github.com/HuddleEng/octopose/issues/41))
+
+# v0.2.7
+* Failed to upload correctly to pypi.
+
+# v0.2.6
+* Powershell needs to be launched with noprofile #52 ([#52](https://github.com/HuddleEng/octopose/issues/52))
+* Updates  Nuget.exe
+
 # v0.2.5
 
 * Show version number ([#47](https://github.com/HuddleEng/octopose/issues/47))
