@@ -1,5 +1,7 @@
 # Octopose
 
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/octopose.svg)](https://pypi.org/project/octopose/)
+
 ![](docs/img/Octopose.png)
 
 **Octopose** is a manifest / state driven deployment framework for [Octopus Deploy](https://octopus.com/). Octopose allows you to create a manifest file based on your releases or deployments that are in Octopus Deploy.
