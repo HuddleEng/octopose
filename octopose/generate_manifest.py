@@ -52,7 +52,7 @@ def main():
     env = args.environment
     specific_projects = args.projects
     ignored_projects = args.ignore
-    projects = sorted(set(config.PROJECTS))
+    projects = list(config.PROJECTS)
 
     environments = octo.get_environments()
     if env not in environments:
