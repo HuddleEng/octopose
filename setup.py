@@ -115,9 +115,9 @@ class UploadCommand(Command):
         self.status('Uploading the package to PyPI via Twine…')
         os.system('twine upload dist/*')
 
-        self.status('Pushing git tags…')
-        os.system('git tag v{0}'.format(about['__version__']))
-        os.system('git push --tags')
+       self.status('Pushing git tags…')
+       os.system('git tag v{0}'.format(about['__version__']))
+       os.system('git push --tags')
         
         sys.exit()
 
@@ -150,7 +150,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.7'
     ],
     # $ setup.py publish support.
     cmdclass={
