@@ -23,9 +23,9 @@
 import os
 import shutil
 import sys
+import time
 
 from octopose import nu, octo, subprocess_runner
-
 
 class LocalDeploy:
     def __init__(self, verbose):
@@ -43,7 +43,6 @@ class LocalDeploy:
                 args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe –NoProfile –ExecutionPolicy Bypass –File {0}".format(step_path)
             return self.subprocess_runner.run(args, "Running of {0} failed".format(step_path), step_path)
         else:
-            print("Can't find path - skipping this file")
             return True, None
 
     def deploy(self, data):
@@ -55,6 +54,7 @@ class LocalDeploy:
 
         deployment_results = []
         for key, value in data['Projects'].items():
+            start_time = time.time()
             successful_deployment = True
             error_message = None
             project_name = key
@@ -83,8 +83,7 @@ class LocalDeploy:
                     print("WARNING: Deploy of {0} has failed. Skipping any remaining packages in the project."
                           .format(project_name))
                     break
-
-            deployment_results.append((project_name, release_version, successful_deployment, error_message))
+            deployment_results.append((project_name, release_version, successful_deployment, error_message, time.time()-start_time))
 
         print_deployment_results(deployment_results)
 
@@ -131,4 +130,4 @@ def print_deployment_results(deployment_results):
             status = "Success"
         else:
             status = "Failure"
-        print("{0} - {1} - {2}".format(result[0], result[1], status))
+        print("{0} - {1} - {2} - {3}".format(result[0], result[1], status, result[4]))
