@@ -34,10 +34,10 @@ class SubprocessRunner:
         """run the specified command in a subprocess and log the stdout of the subprocess (if it errors or verbose is
         True) and the error_msg (if it errors)"""
         working_path = pathlib.Path(path)
-        completed_process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False, cwd=working_path.parent)
+        completed_process = subprocess.run(command, capture_output=True, cwd=working_path.parent)
 
         if completed_process.returncode != 0:
-            error_logs = completed_process.stdout.decode('utf-8')
+            error_logs = completed_process.stderr.decode('utf-8')
             print(error_logs)
             print(error_msg, file=sys.stderr)
             return False, "{0} \r\n {1}".format(error_msg, error_logs)

@@ -47,7 +47,7 @@ DESCRIPTION = 'Command line tools for managing local and remote octopus deploys 
 URL = 'https://github.com/HuddleEng/octopose'
 EMAIL = 'opensource@huddle.com'
 AUTHOR = 'Huddleoss'
-REQUIRES_PYTHON = '>=3.6.0'
+REQUIRES_PYTHON = '>=3.7.0'
 VERSION = None
 
 # What packages are required for this module to be executed?
