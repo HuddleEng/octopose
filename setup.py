@@ -52,12 +52,8 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-        'certifi>=2017.7.27.1',
-        'chardet>=3.0.4',
-        'idna>=2.6',
-        'requests>=2.18.4',
-        'urllib3>=1.22',
-        'pyyaml==3.12'
+        'requests>=2.21.0',
+        'pyyaml>=5.1'
 ]
 
 # What packages are optional?
