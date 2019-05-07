@@ -26,7 +26,7 @@ import os
 config = None
 try:
     with open(os.path.expanduser("~\.octopose\config.yaml"), 'r') as yaml_file:
-        config = yaml.load(yaml_file)
+        config = yaml.load(yaml_file, Loader=yaml.CLoader)
 except FileNotFoundError:
     print("""Config file not found. Octopose expects a ~\.octopose\config.yaml in the following format:
 OCTOPUS_URI: ""
