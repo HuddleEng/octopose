@@ -65,7 +65,7 @@ def main():
         for p in projects[:]:
             if p in sorted(set(ignored_projects)):
                 projects.remove(p)
-                
+
     manifest = {'StagingLocation': config.STAGING, 'Projects': {}}
     for project in projects:
         project_id = octo.get_project_id(project)
@@ -75,20 +75,26 @@ def main():
                 if specific_versions[project] is None:
                     manifest['Projects'][project] = project_detail = None
                     continue
-                release = octo.get_release_for_version(project_id, specific_versions[project])
+                release = octo.get_release_for_version(
+                    project_id, specific_versions[project])
                 project_detail['Version'] = specific_versions[project]
-                project_detail['Packages'] = octo.get_specific_package_ids(release)
+                project_detail['Packages'] = octo.get_specific_package_ids(
+                    release)
             elif env != "local":
-                release = octo.get_release_for_env(project_id, environments[env])
+                release = octo.get_release_for_env(
+                    project_id, environments[env])
                 if release is not None:
                     project_detail['Version'] = release['Version']
-                    packages = octo.get_specific_package_ids(release, environments[env])
+                    packages = octo.get_specific_package_ids(
+                        release, environments[env])
                     project_detail['Packages'] = packages
                 else:
-                    project_detail['Packages'] = octo.get_latest_packages(project_id)
+                    project_detail['Packages'] = octo.get_latest_packages(
+                        project_id)
                     missing_projects.append(project)
             else:
-                project_detail['Packages'] = octo.get_latest_packages(project_id)
+                project_detail['Packages'] = octo.get_latest_packages(
+                    project_id)
 
             manifest['Projects'][project] = project_detail
 

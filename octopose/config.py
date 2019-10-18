@@ -25,10 +25,10 @@ import os
 
 config = None
 try:
-    with open(os.path.expanduser("~\.octopose\config.yaml"), 'r') as yaml_file:
-        config = yaml.load(yaml_file, Loader=yaml.CLoader)
+    with open(os.path.expanduser("~\\.octopose\\config.yaml"), 'r') as yaml_file:
+        config = yaml.load(yaml_file, Loader=yaml.SafeLoader)
 except FileNotFoundError:
-    print("""Config file not found. Octopose expects a ~\.octopose\config.yaml in the following format:
+    print("""Config file not found. Octopose expects a ~\\.octopose\\config.yaml in the following format:
 OCTOPUS_URI: ""
 OCTOPUS_HEADERS:
   "x-octopus-apikey": ""

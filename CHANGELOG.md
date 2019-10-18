@@ -1,5 +1,8 @@
 # Next Release
 
+# v0.2.13
+* fixs yaml loader to work with python 3.8
+
 # v0.2.8
 * Fix for issue #44. Manifest generation handles missing projects. ([#44](https://github.com/HuddleEng/octopose/issues/44))
 * Ignore argument allows for the exclusion of projects. Fix for #41. ([#41](https://github.com/HuddleEng/octopose/issues/41))

@@ -35,7 +35,8 @@ def main():
                         help='generate      Creates a new manifest file from the projects in config.yaml.\r'
                              'deploy        Deploys the state described in the specified manifest file.')
 
-    parser.add_argument('--version', action='version', version='%(prog)s {0}'.format(__version__))
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s {0}'.format(__version__))
 
     args = parser.parse_args(sys.argv[1:2])
 
@@ -45,5 +46,3 @@ def main():
         deploy.main()
     else:
         parser.print_help()
-
-

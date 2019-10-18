@@ -31,7 +31,8 @@ class Nu:
     def __init__(self, subprocess_runner):
         """Nu interacts with nuget.exe by running commands in a subprocess"""
         self.subprocess_runner = subprocess_runner
-        self.nuget_exe = "{0}\\third_party\\NuGet.exe".format(os.path.dirname(os.path.abspath(__file__)))
+        self.nuget_exe = "{0}\\third_party\\NuGet.exe".format(
+            os.path.dirname(os.path.abspath(__file__)))
 
     def get_deployable(self, name, version, staging_location):
         """ Get deployables from pacakage sources for local deployment. """
@@ -41,4 +42,5 @@ class Nu:
             if version is not None:
                 args = args + " -Version {0}".format(version)
 
-            self.subprocess_runner.run(args, "Getting of {0} at version {1} failed".format(name, version), self.nuget_exe)
+            self.subprocess_runner.run(args, "Getting of {0} at version {1} failed".format(
+                name, version), self.nuget_exe)

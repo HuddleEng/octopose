@@ -27,6 +27,7 @@ import time
 
 from octopose import nu, octo, subprocess_runner
 
+
 class LocalDeploy:
     def __init__(self, verbose):
         """LocalDeploy deploys Octopus packages (on the current machine) without needing a tentacle service"""
@@ -38,9 +39,11 @@ class LocalDeploy:
         print("- {0}".format(step_path))
         if os.path.exists(step_path):
             if is_64_bit_python_installation():
-                args = "powershell.exe –NoProfile –ExecutionPolicy Bypass –File {0}".format(step_path)
+                args = "powershell.exe –NoProfile –ExecutionPolicy Bypass –File {0}".format(
+                    step_path)
             else:
-                args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe –NoProfile –ExecutionPolicy Bypass –File {0}".format(step_path)
+                args = "c:\\windows\\sysnative\\cmd.exe /c powershell.exe –NoProfile –ExecutionPolicy Bypass –File {0}".format(
+                    step_path)
             return self.subprocess_runner.run(args, "Running of {0} failed".format(step_path), step_path)
         else:
             return True, None
@@ -72,7 +75,7 @@ class LocalDeploy:
                 print("- NuGet - {0} - {1}".format(package_name, version))
                 self.nu.get_deployable(package_name, version, staging)
 
-                for script in ["{0}\{1}.{2}\PreDeploy.ps1", "{0}\{1}.{2}\Deploy.ps1", "{0}\{1}.{2}\PostDeploy.ps1"]:
+                for script in ["{0}\\{1}.{2}\\PreDeploy.ps1", "{0}\\{1}.{2}\\Deploy.ps1", "{0}\\{1}.{2}\\PostDeploy.ps1"]:
                     successful_deployment, error_message = self.invoke_deploy(script.format(staging,
                                                                                             package_name,
                                                                                             version))
@@ -83,11 +86,13 @@ class LocalDeploy:
                     print("WARNING: Deploy of {0} has failed. Skipping any remaining packages in the project."
                           .format(project_name))
                     break
-            deployment_results.append((project_name, release_version, successful_deployment, error_message, time.time()-start_time))
+            deployment_results.append(
+                (project_name, release_version, successful_deployment, error_message, time.time()-start_time))
 
         print_deployment_results(deployment_results)
 
-        all_deployments_succeeded = all(result[2] for result in deployment_results)
+        all_deployments_succeeded = all(
+            result[2] for result in deployment_results)
         if not all_deployments_succeeded:
             exit(1)
 
@@ -130,4 +135,5 @@ def print_deployment_results(deployment_results):
             status = "Success"
         else:
             status = "Failure"
-        print("{0} - {1} - {2} - {3}".format(result[0], result[1], status, result[4]))
+        print(
+            "{0} - {1} - {2} - {3}".format(result[0], result[1], status, result[4]))
