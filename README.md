@@ -120,6 +120,54 @@ octopose generate --ignore Tasks
 ```
 This will remove projects from the manfest.
 
+
+### Generate a manifest for a specific project and version
+```
+octopose generate -p Huddle.ABC -v '{\"Huddle.ABC\" : \"1.99.9.999\"}'
+```
+This will generate manifest only for the specified projects and versions:
+
+```
+{
+    'Projects':
+    {
+        'Huddle.ABC':
+            {
+                'Packages': ['Huddle.ABC'],
+                'Version': '1.99.9.999'
+            }
+    },
+    'StagingLocation': 'D:\\StagingLocation'
+}
+```
+
+It is also possible to generate manifest based on packages in an environment and override version of one specfic project.
+Eg:
+```
+octopose generate -e uklive -v '{\"Huddle.ABC\" : \"1.99.9.999\"}'
+```
+
+
+```
+{
+    'Projects':
+    {
+        'Huddle.ABC':
+            {
+                'Packages': ['Huddle.ABC'],
+                'Version': '1.99.9.999'
+            }
+    },
+    'Huddle.XYZ':
+            {
+                'Packages': ['Huddle.XYZ1', 'Huddle.XYZ2'],
+                'Version': '2.3.0'
+            }
+    },
+    'StagingLocation': 'D:\\StagingLocation'
+}
+```
+
 ### Save manifest to a file
 
 ```
