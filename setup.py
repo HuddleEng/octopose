@@ -53,7 +53,7 @@ VERSION = None
 # What packages are required for this module to be executed?
 REQUIRED = [
     'requests>=2.22.0',
-    'pyyaml>=5.1.2'
+    'pyyaml>=5.3'
 ]
 
 # What packages are optional?
